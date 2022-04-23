@@ -14,15 +14,21 @@ All keys above can be customized from "config.lua" file and the pause menu
 ### Languages
 
 · English ( Cruise Control & Speed Limiter )
+
 · Spanish ( Velocidad de Crucero & Limitador de Velocidad )
+
 · French ( Régulateur de Vitesse & Limiteur de Vitesse )
+
 · German ( Tempomat & Geschwindigkeitsbegrenzer )
+
 . Polish ( Tempomat & Ogranicznik prędkości )
+
 · Finish ( Vakionopeudensäädin & Nopeusrajoitin )
 
 ### Installation
 
 **Manual**
+
 Download this repo in 'resources/[esx_addons]' and replace all existing
 
 **Using [fvm](https://github.com/qlaffont/fvm-installer).**
