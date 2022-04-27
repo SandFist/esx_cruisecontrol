@@ -1,7 +1,7 @@
 local CruisedSpeed, CruisedSpeedKm, VehicleVectorY = 0, 0, 0
 
 RegisterCommand("cruise", function(src)
-	if IsDriver() and not IsBoat() then 
+	if IsDriving() and IsDriver() and not IsBoat() then 
 		TriggerCruiseControl()
 	end
 end)
@@ -89,7 +89,7 @@ end
 local togglelimiter = false
 
 RegisterCommand("limiter", function(src)
-	if IsDriver() and not IsBoat() then
+	if IsDriving() and IsDriver() and not IsBoat() then
 		TriggerSpeedLimiter()
 	end
 end)
