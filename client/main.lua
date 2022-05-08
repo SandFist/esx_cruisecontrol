@@ -2,9 +2,8 @@ local CruisedSpeed, CruisedSpeedKm, VehicleVectorY = 0, 0, 0
 
 local togglelimiter = false
 
-
 RegisterCommand("cruise", function(src)
-	if IsDriving() and IsDriver() and not IsBoat() then 
+	if IsDriving() and IsDriver() and not IsBoat() and not IsHeli() and not IsPlane() and not IsSub() and not IsTrain() then 
 		TriggerCruiseControl()
 	end
 end)
@@ -55,7 +54,7 @@ end
 
 
 RegisterCommand("limiter", function(src)
-	if IsDriving() and IsDriver() and not IsBoat() then
+	if IsDriving() and IsDriver() and not IsBoat() and not IsHeli() and not IsPlane() and not IsSub() and not IsTrain() then
 		TriggerSpeedLimiter()
 	end
 end)
@@ -76,7 +75,7 @@ end
 
 
 RegisterCommand("indicator", function(src, args)
-	if IsDriving() and IsDriver() and not IsBoat() then
+	if IsDriving() and IsDriver() and not IsBoat() and not IsHeli() and not IsPlane() and not IsSub() and not IsTrain() then
 		if args[1] == "left" then
 			TriggerIndicator('left')
 		elseif args[1] == "right" then
@@ -128,6 +127,22 @@ function RightIndicator (toggle)
 	SetVehicleIndicatorLights(GetVehicle(), 0, toggle)
 end
 
+function IsTrain ()
+	return IsPedInAnyTrain(PlayerPedId(), false)
+end
+
+function IsSub ()
+	return IsPedInAnySub(PlayerPedId(), false)
+end
+
+function IsPlane ()
+	return IsPedInAnyPlane(PlayerPedId(), false)
+end
+
+function IsHeli ()
+	return IsPedInAnyHeli(PlayerPedId(), false)
+end
+
 function IsBoat ()
 	return IsPedInAnyBoat(PlayerPedId(), false)
 end
@@ -161,5 +176,3 @@ end
 function TransformToKm (speed)
 	return math.floor(speed * 3.6 + 0.5)
 end
-
-
