@@ -1,5 +1,8 @@
 local CruisedSpeed, CruisedSpeedKm, VehicleVectorY = 0, 0, 0
 
+local togglelimiter = false
+
+
 RegisterCommand("cruise", function(src)
 	if IsDriving() and IsDriver() and not IsBoat() then 
 		TriggerCruiseControl()
@@ -9,7 +12,7 @@ end)
 RegisterKeyMapping("cruise", _U('description'), "keyboard",Config.ToggleKey)
 
 function TriggerCruiseControl()
-	if CruisedSpeed == 0 and IsDriving() then
+	if CruisedSpeed == 0 then
 		if GetVehicleSpeed() > 0 and GetVehicleCurrentGear(GetVehicle()) > 0	then
 			CruisedSpeed = GetVehicleSpeed()
 			CruisedSpeedKm = TransformToKm(CruisedSpeed)
@@ -50,43 +53,6 @@ function TriggerCruiseControl()
 	end
 end
 
-function IsTurningOrHandBraking ()
-	return IsControlPressed(2, 76) or IsControlPressed(2, 63) or IsControlPressed(2, 64)
-end
-
-function IsDriving ()
-	return IsPedInAnyVehicle(PlayerPedId(), false)
-end
-
-function GetVehicle ()
-	return GetVehiclePedIsIn(PlayerPedId(), false)
-end
-
-function IsInVehicle ()
-	return GetPedInVehicleSeat(GetVehicle(), -1)
-end
-
-function IsDriver ()
-	return GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId(), false), -1)
-end
-
-function GetVehicleSpeed ()
-	return GetEntitySpeed(GetVehicle())
-end
-
-function TransformToKm (speed)
-	return math.floor(speed * 3.6 + 0.5)
-end
-
--- Speed Limiter
-
-function IsBoat ()
-	return IsPedInAnyBoat(PlayerPedId(), false)
-end
-
---
-
-local togglelimiter = false
 
 RegisterCommand("limiter", function(src)
 	if IsDriving() and IsDriver() and not IsBoat() then
@@ -107,3 +73,93 @@ function TriggerSpeedLimiter ()
 							ESX.ShowNotification(_U('activated2') .. ': ~b~ ' .. TransformToKm(GetVehicleSpeed()) .. ' km/h')
 						end
 end
+
+
+RegisterCommand("indicator", function(src, args)
+	if IsDriving() and IsDriver() and not IsBoat() then
+		if args[1] == "left" then
+			TriggerIndicator('left')
+		elseif args[1] == "right" then
+			TriggerIndicator('right')
+		else
+			TriggerIndicator('both')
+		end
+	end
+end)
+
+RegisterKeyMapping("indicator left", _U('description3'), "keyboard",Config.ToggleKey3)
+RegisterKeyMapping("indicator right", _U('description4'), "keyboard",Config.ToggleKey4)
+RegisterKeyMapping("indicator emergency", _U('description5'), "keyboard",Config.ToggleKey5)
+
+function TriggerIndicator (dir)
+	local lightstate = GetVehicleIndicatorLights(GetVehicle())
+	if dir == 'left' then
+		if lightstate == 1 then
+			LeftIndicator(false)
+			RightIndicator(false)
+		else
+			LeftIndicator(true)
+			RightIndicator(false)
+		end
+	elseif dir == 'right' then
+		if lightstate == 2 then
+			LeftIndicator(false)
+			RightIndicator(false)
+		else
+			RightIndicator(true)
+			LeftIndicator(false)
+		end
+	else
+		if lightstate == 3 then
+			LeftIndicator(false)
+			RightIndicator(false)
+		else
+			LeftIndicator(true)
+			RightIndicator(true)
+		end
+	end
+end
+
+function LeftIndicator (toggle)
+	SetVehicleIndicatorLights(GetVehicle(), 1, toggle)
+end
+
+function RightIndicator (toggle)
+	SetVehicleIndicatorLights(GetVehicle(), 0, toggle)
+end
+
+function IsBoat ()
+	return IsPedInAnyBoat(PlayerPedId(), false)
+end
+
+function IsTurningOrHandBraking ()
+	return IsControlPressed(2, 76) or IsControlPressed(2, 63) or IsControlPressed(2, 64)
+end
+
+function IsDriving ()
+	return IsPedInAnyVehicle(PlayerPedId(), false)
+end
+
+function GetVehicle ()
+	return GetVehiclePedIsIn(PlayerPedId(), false)
+end
+
+function IsInVehicle ()
+	return GetPedInVehicleSeat(GetVehicle(), -1)
+end
+
+function IsDriver ()
+	if PlayerPedId() == GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId(), false), -1) then
+		return true
+	end
+end
+
+function GetVehicleSpeed ()
+	return GetEntitySpeed(GetVehicle())
+end
+
+function TransformToKm (speed)
+	return math.floor(speed * 3.6 + 0.5)
+end
+
+
